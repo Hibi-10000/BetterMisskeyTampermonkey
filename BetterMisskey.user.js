@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Better Misskey
 // @namespace    http://tampermonkey.net/
-// @version      0.2.0-hibi.1a
+// @version      0.3.1-hibi.1a
 // @description  include等にお好みのMisskeyインスタンスを入力して利用してください
 // @author       kaonasi_biwa, Hibi_10000
 // @homepage     https://github.com/Hibi-10000/BetterMisskeyTampermonkey
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=misskey.io
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=misskey-hub.net
 // @updateURL    https://github.com/Hibi-10000/BetterMisskeyTampermonkey/releases/latest/download/BetterMisskey.user.js
 // @downloadURL  https://github.com/Hibi-10000/BetterMisskeyTampermonkey/releases/latest/download/BetterMisskey.user.js
 // @grant        none
@@ -15,12 +15,11 @@
 // @match        *://ktnfm.com/*
 // @match        *://otoya.space/*
 // @match        *://misskey.sda1.net/*
-// @match        *://blog.ablaze.one/*
 // @match        *://misskey.dev/*
 // @match        *://submarin.online/*
 // @match        *://m.komefura.com/*
-// @match        *://voskey.icalo.net/*
 // @match        *://misskey.flowers/*
+// @match        *://voskey.icalo.net/*
 // ==/UserScript==
 
 // fork from https://github.com/kaonasi-biwa/BetterMisskeyTampermonkey/
@@ -28,50 +27,47 @@
 'use strict';
 let articleClick = true; //ノートクリックでTwitterのように拡大表示できるようにする
 let followIconClick = true; //フォロー・フォロワー一覧でアイコンクリックだけでプロフィール表示できるようにする
-let rnUseQuote = true; //RNを引用RNを使ったものにする
+let rnUseQuote = false; //RNを引用RNを使ったものにする
 
 let observer = new MutationObserver(observerFunc)
-const setObs = () => {
-    if(document.querySelector("#misskey_app,#app")) {
-        observer.observe(document.querySelector("#misskey_app,#app"), {childList: true,subtree: true})
-    }
-    else {
-        window.setTimeout(setObs, 1000)
-    }
-}
+let observerRoot = document.querySelector("#misskey_app,#app")
+const observerConfig = { childList: true, subtree: true }
 
 function observerFunc() {
     document.querySelector("#misskey_app > div > div.xFdHz > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div").onclick = closeClick
     document.querySelector("#misskey_app > div > div:nth-child(1) > div").onclick = closeClick
     observer.disconnect();
     if (articleClick) {
-        let icons = document.querySelectorAll(`[tabindex="-1"] > :is(article,div) [href^="/@"][title]:not(.misskeyKaonasi)`)
-        for(let elem of icons) {
-            if (elem.parentElement.querySelector(`header [href^="/notes/"]`) != null) elem.parentElement.onclick = eventClick
+        let icons = document.querySelectorAll(`[tabindex] > :is(article,div) [href^="/@"][title]:not(.misskeyKaonasi)`)
+        for (let elem of icons) {
+            if (elem.parentElement.querySelector(`header [href^="/notes/"]`) != null) {
+                elem.parentElement.onclick = eventClick
+            }
             elem.classList.add("misskeyKaonasi")
         }
     }
     if (followIconClick && location.host != "submarin.online") {
-      let followIcons = document.querySelectorAll(":is(.avatar,span[title]):not(.misskeyKaonasi):not(a > *)")
-      for (let elem of followIcons) {
-        elem.onclick = avatarClick
-        elem.classList.add("misskeyKaonasi")
-      }
+        let followIcons = document.querySelectorAll(":is(.avatar,span[title]):not(.misskeyKaonasi):not(a > *)")
+        for (let elem of followIcons) {
+            elem.onclick = avatarClick
+            elem.style.cursor = "pointer"
+            elem.classList.add("misskeyKaonasi")
+        }
     }
-    if(rnUseQuote){
-      let rnIcon = document.querySelectorAll(`[role="menuitem"][tabindex="0"]:not(.misskeyKaonasi) > .ti-fw.xh8pZ.ti.ti-repeat`)
-      for(let elem of rnIcon){
-          let base = elem.parentElement.parentElement
-          elem.parentElement.outerHTML = elem.parentElement.outerHTML
-          base.children[0].classList.add("misskeyKaonasi")
-          base.children[0].addEventListener(
-              'click',
-              rnClick,
-              true
-          )
-      }
+    if (rnUseQuote) {
+        let rnIcon = document.querySelectorAll(`[role="menuitem"][tabindex="0"]:not(.misskeyKaonasi) > .ti-fw.xh8pZ.ti.ti-repeat`)
+        for (let elem of rnIcon) {
+            let base = elem.parentElement.parentElement
+            elem.parentElement.outerHTML = elem.parentElement.outerHTML
+            base.children[0].classList.add("misskeyKaonasi")
+            base.children[0].addEventListener(
+                'click',
+                rnClick,
+                true
+            )
+        }
     }
-    observer.observe(document.querySelector("#misskey_app,#app"),{childList: true,subtree: true})
+    observer.observe(observerRoot, observerConfig)
 }
 
 const setStyle = () => {
@@ -107,8 +103,9 @@ const setStyle = () => {
 }
 
 function eventClick(event) {
+    if (event.target.tagName == "SUMMARY") return
     if (event.target.tagName == "ARTICLE" || event.target.tagName == "DIV" || event.target.tagName == "FOOTER" || event.target.tagName == "HEADER") {
-        //event.currentTarget.parentElement.querySelector(`header [href^="/notes/"]`).click()
+        //event.currentTarget.querySelector(`header [href^="/notes/"]`).click()
         //const popups = document.querySelectorAll(`#misskey_app > div > div.xpAOc > div.xnMEB._shadow > div.xbt7a > span.xaEYs > button [class~="ti-x"]`)
         //if (popups.length != 0) for (let popup of popups) popup.parentElement.click()
         let clickEvent = document.createEvent('MouseEvents')
@@ -119,6 +116,8 @@ function eventClick(event) {
         },0);
     }
     event.stopPropagation()
+    event.stopImmediatePropagation()
+    event.preventDefault()
 }
 
 function closeClick(event) {
@@ -129,20 +128,28 @@ function closeClick(event) {
     event.stopPropagation()
 }
 
-function eventCancel(event) {
-    event.stopPropagation()
-}
-
 function avatarClick(event) {
     (event.currentTarget.parentElement.querySelector("a.name") ?? event.currentTarget.parentElement.querySelector(`a[href^="/@"]`))?.click()
 }
 
-function rnClick(event){
+function rnClick(event) {
     event.currentTarget.nextElementSibling.click()
     window.setTimeout(() => document.querySelector(`[data-cy-open-post-form-submit=""]`).click(),100)
     event.stopPropagation()
     event.stopImmediatePropagation()
     event.preventDefault()
+}
+
+const setObs = () => {
+    if (!observerRoot && document.querySelector("#misskey_app,#app")) {
+        observerRoot = document.querySelector("#misskey_app,#app")
+    }
+    if (observerRoot) {
+        observer.observe(observerRoot, observerConfig)
+    }
+    else {
+        window.setTimeout(setObs, 1000)
+    }
 }
 
 (function() {
