@@ -111,10 +111,13 @@ function eventClick(event) {
         //event.currentTarget.querySelector(`header [href^="/notes/"]`).click()
         //const popups = document.querySelectorAll(`#misskey_app > div > div.xpAOc > div.xnMEB._shadow > div.xbt7a > span.xaEYs > button [class~="ti-x"]`)
         //if (popups.length != 0) for (let popup of popups) popup.parentElement.click()
-        const clickEvent = new MouseEvent("mousedown", { bubbles: true, cancelable: true })
-        event.currentTarget.parentElement.querySelector(`footer [class~="ti-dots"]`).parentElement.dispatchEvent(clickEvent)
+        //const clickEvent = new MouseEvent("mousedown", { bubbles: true, cancelable: true })
+        //event.currentTarget.parentElement.querySelector(`footer [class~="ti-dots"]`).parentElement.dispatchEvent(clickEvent)
+        const rightClickEvent = new PointerEvent("contextmenu", { bubbles: true, cancelable: true })
+        event.currentTarget.parentElement.querySelector(`header [href^="/notes/"]`).dispatchEvent(rightClickEvent)
         setTimeout(() => {
-            document.querySelector(`#misskey_app > div > div.xc6MI.xEzLL > div.xr8AW > div > div > button [class~="ti-info-circle"]`).parentElement.click()
+            //document.querySelector(`#misskey_app > div > div.xc6MI.xEzLL > div.xr8AW > div > div > button [class~="ti-info-circle"]`).parentElement.click()
+            document.querySelector(`#misskey_app > div > div.xsGnU > div[role="menu"] > div._popup > button:nth-of-type(1)`).click()
         }, 0);
     }
     event.stopPropagation()
