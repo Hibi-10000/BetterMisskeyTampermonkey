@@ -111,8 +111,7 @@ function eventClick(event) {
         //event.currentTarget.querySelector(`header [href^="/notes/"]`).click()
         //const popups = document.querySelectorAll(`#misskey_app > div > div.xpAOc > div.xnMEB._shadow > div.xbt7a > span.xaEYs > button [class~="ti-x"]`)
         //if (popups.length != 0) for (let popup of popups) popup.parentElement.click()
-        const clickEvent = document.createEvent('MouseEvents')
-        clickEvent.initEvent("mousedown", true, true)
+        const clickEvent = new MouseEvent("mousedown", { bubbles: true, cancelable: true })
         event.currentTarget.parentElement.querySelector(`footer [class~="ti-dots"]`).parentElement.dispatchEvent(clickEvent)
         setTimeout(() => {
             document.querySelector(`#misskey_app > div > div.xc6MI.xEzLL > div.xr8AW > div > div > button [class~="ti-info-circle"]`).parentElement.click()
