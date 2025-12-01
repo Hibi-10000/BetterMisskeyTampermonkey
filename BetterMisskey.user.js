@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Misskey
 // @namespace    http://tampermonkey.net/
-// @version      0.3.1-hibi.1b
+// @version      0.3.1-hibi.2a
 // @description  include等にお好みのMisskeyインスタンスを入力して利用してください
 // @author       kaonasi_biwa, Hibi_10000
 // @homepage     https://github.com/Hibi-10000/BetterMisskeyTampermonkey
