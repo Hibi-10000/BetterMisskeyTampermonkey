@@ -74,29 +74,29 @@ const setStyle = () => {
     const newStyle = document.createElement("style")
     newStyle.classList.add("bmCSS")
     const css_style = `
-/* ナビゲーションバーがアイコンの時にクリックスポットを広げる */
-#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(1) {
+/* ナビゲーションバーがアイコンの時にのみクリックスポットを広げる */
+#misskey_app > div > div:nth-child(1) > div.xghTi:nth-child(1) > div > div:nth-child(1) {
     padding: 0;
     margin: 15px auto;
 }
-#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(1) > button {
+#misskey_app > div > div:nth-child(1) > div.xghTi:nth-child(1) > div > div:nth-child(1) > button {
     width: auto;
     padding: 5px 7.5%;
 }
-#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(1) > button > img {
+#misskey_app > div > div:nth-child(1) > div.xghTi:nth-child(1) > div > div:nth-child(1) > button > img {
     width: 100%;
 }
-#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(2) {
+#misskey_app > div > div:nth-child(1) > div.xghTi:nth-child(1) > div > div:nth-child(2) {
     width: 54px;
     margin: 0 auto auto auto;
     flex: 0;
 }
-#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(3) {
+#misskey_app > div > div:nth-child(1) > div.xghTi:nth-child(1) > div > div:nth-child(3) {
     width: 52px;
     margin: 20px auto 0 auto;
     padding: 0;
 }
-#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(3) > button:nth-child(2) {
+#misskey_app > div > div:nth-child(1) > div.xghTi:nth-child(1) > div > div:nth-child(3) > button:nth-child(2) {
     margin: auto;
 }
 `
