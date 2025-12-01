@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Better Misskey
 // @namespace    http://tampermonkey.net/
-// @version      0.3.1-hibi.1a
+// @version      0.3.1-hibi.1b
 // @description  include等にお好みのMisskeyインスタンスを入力して利用してください
 // @author       kaonasi_biwa, Hibi_10000
 // @homepage     https://github.com/Hibi-10000/BetterMisskeyTampermonkey
@@ -34,8 +34,8 @@ let observerRoot = document.querySelector("#misskey_app,#app")
 const observerConfig = { childList: true, subtree: true }
 
 function observerFunc() {
-    document.querySelector("#misskey_app > div > div.xFdHz > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div").onclick = closeClick
-    document.querySelector("#misskey_app > div > div:nth-child(1) > div").onclick = closeClick
+    document.querySelector("#misskey_app > div > div > div:nth-child(2) > div._pageContainer > div > div > div[data-sticky-container-header-height]").onclick = closeClick
+    document.querySelector("#misskey_app > div > div > div:nth-child(1) > div").onclick = closeClick
     observer.disconnect();
     if (articleClick) {
         let icons = document.querySelectorAll(`[tabindex] > :is(article,div) [href^="/@"][title]:not(.misskeyKaonasi)`)
@@ -74,26 +74,29 @@ const setStyle = () => {
     const newStyle = document.createElement("style")
     newStyle.classList.add("bmCSS")
     const css_style = `
-#misskey_app > div > div:nth-child(1) > div > div:nth-child(1) {
+/* ナビゲーションバーがアイコンの時にクリックスポットを広げる */
+#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(1) {
     padding: 0;
-    margin: 15px;
+    margin: 15px auto;
 }
-#misskey_app > div > div:nth-child(1) > div > div:nth-child(1) > button {
+#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(1) > button {
     width: auto;
-    padding: 5px 10px;
+    padding: 5px 7.5%;
 }
-#misskey_app > div > div:nth-child(1) > div > div:nth-child(2) {
-    width: 51px;
+#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(1) > button > img {
+    width: 100%;
+}
+#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(2) {
+    width: 54px;
     margin: 0 auto auto auto;
     flex: 0;
 }
-#misskey_app > div > div:nth-child(1) > div > div:nth-child(3) {
+#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(3) {
     width: 52px;
-    margin: 20px auto;
+    margin: 20px auto 0 auto;
     padding: 0;
 }
-#misskey_app > div > div:nth-child(1) > div > div:nth-child(3) > button:nth-child(2) {
-    width: auto;
+#misskey_app > div > div:nth-child(1) > div:nth-child(1) > div > div:nth-child(3) > button:nth-child(2) {
     margin: auto;
 }
 `
@@ -108,12 +111,12 @@ function eventClick(event) {
         //event.currentTarget.querySelector(`header [href^="/notes/"]`).click()
         //const popups = document.querySelectorAll(`#misskey_app > div > div.xpAOc > div.xnMEB._shadow > div.xbt7a > span.xaEYs > button [class~="ti-x"]`)
         //if (popups.length != 0) for (let popup of popups) popup.parentElement.click()
-        let clickEvent = document.createEvent('MouseEvents')
+        const clickEvent = document.createEvent('MouseEvents')
         clickEvent.initEvent("mousedown", true, true)
         event.currentTarget.parentElement.querySelector(`footer [class~="ti-dots"]`).parentElement.dispatchEvent(clickEvent)
-        setTimeout(()=> {
+        setTimeout(() => {
             document.querySelector(`#misskey_app > div > div.xc6MI.xEzLL > div.xr8AW > div > div > button [class~="ti-info-circle"]`).parentElement.click()
-        },0);
+        }, 0);
     }
     event.stopPropagation()
     event.stopImmediatePropagation()
@@ -121,11 +124,14 @@ function eventClick(event) {
 }
 
 function closeClick(event) {
+    if (event.target.tagName == "SUMMARY") return
     if (event.target.tagName == "DIV") {
-        const popups = document.querySelectorAll(`#misskey_app > div > div.xpAOc > div.xnMEB._shadow > div.xbt7a > span.xaEYs > button [class~="ti-x"]`)
+        const popups = document.querySelectorAll(`#misskey_app > div > div.xpAOc > div.xnMEB > div.xbt7a > span.xaEYs > button > [class~="ti-x"]`)
         if (popups.length != 0) for (let popup of popups) popup.parentElement.click()
     }
     event.stopPropagation()
+    event.stopImmediatePropagation()
+    event.preventDefault()
 }
 
 function avatarClick(event) {
